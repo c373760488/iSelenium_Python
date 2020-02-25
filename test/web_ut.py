@@ -4,15 +4,17 @@ import time
 import unittest
 
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 
 
 class ISelenium(unittest.TestCase):
     # 读入配置文件
+    url="http://localhost:30000/wd/hub"
     def get_config(self):
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.environ['HOME'], 'iselenium.ini'))
+        config.read(os.path.join(os.getcwd(), '../iselenium.ini'))
         return config
 
     def tearDown(self):
@@ -20,7 +22,6 @@ class ISelenium(unittest.TestCase):
 
     def setUp(self):
         config = self.get_config()
-
         # 控制是否采用无界面形式运行自动化测试
         try:
             using_headless = os.environ["using_headless"]
@@ -33,11 +34,12 @@ class ISelenium(unittest.TestCase):
             print('使用无界面方式运行')
             chrome_options.add_argument("--headless")
 
-        self.driver = webdriver.Chrome(executable_path=config.get('driver', 'chrome_driver'),
-                                       chrome_options=chrome_options)
+        self.driver = webdriver.Remote(command_executor=self.url,
+                                  desired_capabilities=DesiredCapabilities.CHROME,
+                                  options=chrome_options)
 
     def test_webui_1(self):
-        self.driver.get("https://ww.baidu.com")
+        self.driver.get("https://www.baidu.com")
         print('打开浏览器，访问 www.baidu.com')
         time.sleep(5)
         assert u"百度一下" in self.driver.title
@@ -52,7 +54,7 @@ class ISelenium(unittest.TestCase):
         self.assertTrue(u"今日头条" in self.driver.title, msg='webui_1校验点 pass')
 
     def test_webui_2(self):
-        self.driver.get("https://ww.baidu.com")
+        self.driver.get("https://www.baidu.com")
         print('打开浏览器，访问 www.baidu.com')
         time.sleep(5)
         assert u"百度一下" in self.driver.title
