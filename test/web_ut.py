@@ -11,17 +11,17 @@ from selenium.webdriver.chrome.options import Options
 
 class ISelenium(unittest.TestCase):
     # 读入配置文件
-    url="http://localhost:30000/wd/hub"
-    def get_config(self):
-        config = configparser.ConfigParser()
-        config.read(os.path.join(os.getcwd(), '../iselenium.ini'))
-        return config
+    url="http://192.168.31.104:30000/wd/hub"
+    # def get_config(self):
+    #     config = configparser.ConfigParser()
+    #     config.read(os.path.join(os.getcwd(), '../iselenium.ini'))
+    #     return config
 
     def tearDown(self):
         self.driver.quit()
 
     def setUp(self):
-        config = self.get_config()
+        # config = self.get_config()
         # 控制是否采用无界面形式运行自动化测试
         try:
             using_headless = os.environ["using_headless"]
